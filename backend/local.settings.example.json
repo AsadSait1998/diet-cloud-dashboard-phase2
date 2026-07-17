@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "DIET_DATASET_PATH": "../data/All_Diets.csv",
+    "DATA_CONTAINER_NAME": "datasets",
+    "DATA_BLOB_NAME": "All_Diets.csv",
+    "CACHE_TTL_SECONDS": "300",
+    "CORS_ALLOWED_ORIGIN": "http://localhost:8000"
+  }
+}

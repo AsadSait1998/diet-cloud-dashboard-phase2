@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive cloud dashboard for the Diets Dataset, powered by Azure Functions and Blob Storage.">
+  <title>Diet Cloud | Nutritional Intelligence</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to dashboard</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Diet Cloud home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 44 44" role="img"><path d="M34.7 8.8C22.4 7.9 13 13.7 10.1 24.3c-1.4 5.2.4 10.1 4.4 12.9 7.5 5.3 17.5.3 18.7-9.5.6-5.4-1-10.4-5.1-14.6 2.4-.4 4.9-1.2 7.4-2.6l-.8-1.7Z"/><path d="M13.7 33.1c4.1-8.9 9.9-14.8 17.4-17.8"/></svg>
+      </span>
+      <span><strong>Diet Cloud</strong><small>Nutritional intelligence</small></span>
+    </a>
+    <div class="connection" id="connection-status" aria-live="polite">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span id="connection-text">Connecting to cloud API</span>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">Azure-powered analytics</p>
+        <h1>See what every diet is <em>made of.</em></h1>
+        <p class="hero-intro">Explore macronutrients, recipe distribution, and cuisine patterns across the Diets Dataset. Every view is calculated on demand by an Azure Function reading from secure Blob Storage.</p>
+      </div>
+      <div class="hero-meta" aria-label="Latest analysis metadata">
+        <div><span>Data source</span><strong id="source-label">Awaiting API</strong></div>
+        <div><span>Function runtime</span><strong id="execution-label">-- ms</strong></div>
+        <div><span>Last refreshed</span><strong id="refresh-label">Not yet</strong></div>
+      </div>
+    </section>
+
+    <section class="filter-panel" aria-labelledby="filter-heading">
+      <div class="section-heading compact-heading">
+        <div>
+          <p class="eyebrow">Shape the analysis</p>
+          <h2 id="filter-heading">Filter the dataset</h2>
+        </div>
+        <button class="text-button" id="clear-filters" type="button">Clear filters</button>
+      </div>
+      <form id="filter-form" class="filters">
+        <label class="field field-search">
+          <span>Recipe search</span>
+          <span class="input-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+            <input id="search-input" name="search" type="search" placeholder="Try curry, tacos, salmon..." autocomplete="off">
+          </span>
+        </label>
+        <label class="field">
+          <span>Diet type</span>
+          <select id="diet-filter" name="diet_types"><option value="">All diet types</option></select>
+        </label>
+        <label class="field">
+          <span>Cuisine</span>
+          <select id="cuisine-filter" name="cuisine"><option value="">All cuisines</option></select>
+        </label>
+        <button class="primary-button" id="apply-filters" type="submit">
+          <span>Update insights</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <button class="icon-button" id="refresh-data" type="button" aria-label="Refresh data from Blob Storage" title="Refresh source data">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0 1.2 4.2M20 4v7h-7"/></svg>
+        </button>
+      </form>
+    </section>
+
+    <div class="alert hidden" id="error-alert" role="alert">
+      <div>
+        <strong>We could not load the analysis.</strong>
+        <p id="error-message">Check the API configuration and try again.</p>
+      </div>
+      <button type="button" id="retry-button">Retry</button>
+    </div>
+
+    <section class="metrics" aria-label="Dataset summary">
+      <article class="metric-card metric-primary">
+        <span class="metric-label">Recipes in view</span>
+        <strong id="metric-recipes">--</strong>
+        <small id="metric-record-context">of -- total records</small>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Diet types</span>
+        <strong id="metric-diets">--</strong>
+        <small>represented in the current view</small>
+      </article>
+      <article class="metric-card nutrient protein">
+        <span class="metric-label">Avg. protein</span>
+        <strong><span id="metric-protein">--</span><small>g</small></strong>
+        <span class="metric-rule"></span>
+      </article>
+      <article class="metric-card nutrient carbs">
+        <span class="metric-label">Avg. carbs</span>
+        <strong><span id="metric-carbs">--</span><small>g</small></strong>
+        <span class="metric-rule"></span>
+      </article>
+      <article class="metric-card nutrient fat">
+        <span class="metric-label">Avg. fat</span>
+        <strong><span id="metric-fat">--</span><small>g</small></strong>
+        <span class="metric-rule"></span>
+      </article>
+    </section>
+
+    <section class="insights-section" aria-labelledby="insights-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Live visualizations</p>
+          <h2 id="insights-heading">Nutritional patterns at a glance</h2>
+        </div>
+        <p id="result-summary" aria-live="polite">Waiting for results...</p>
+      </div>
+
+      <div class="chart-grid">
+        <article class="chart-card chart-wide">
+          <header>
+            <div><span class="chart-number">01</span><h3>Average macros by diet</h3></div>
+            <p>Compare protein, carbohydrate, and fat averages in grams.</p>
+          </header>
+          <div class="legend" aria-hidden="true"><span class="legend-protein">Protein</span><span class="legend-carbs">Carbs</span><span class="legend-fat">Fat</span></div>
+          <canvas id="macro-chart" height="340" role="img" aria-label="Grouped bar chart of average protein, carbs, and fat by diet type"></canvas>
+        </article>
+
+        <article class="chart-card">
+          <header>
+            <div><span class="chart-number">02</span><h3>Recipe mix</h3></div>
+            <p>Share of recipes represented by each diet type.</p>
+          </header>
+          <canvas id="distribution-chart" height="340" role="img" aria-label="Donut chart of recipe distribution by diet type"></canvas>
+        </article>
+
+        <article class="chart-card">
+          <header>
+            <div><span class="chart-number">03</span><h3>Leading cuisines</h3></div>
+            <p>The eight most common cuisine labels in the current result.</p>
+          </header>
+          <canvas id="cuisine-chart" height="340" role="img" aria-label="Horizontal bar chart of top cuisines by recipe count"></canvas>
+        </article>
+
+        <article class="chart-card chart-full">
+          <header>
+            <div><span class="chart-number">04</span><h3>Protein vs. carbohydrates</h3></div>
+            <p>Up to 30 protein-rich recipes per diet. Point color identifies diet type; position shows macro balance.</p>
+          </header>
+          <canvas id="scatter-chart" height="390" role="img" aria-label="Scatter plot comparing protein and carbohydrates for recipes"></canvas>
+        </article>
+      </div>
+    </section>
+
+    <section class="data-section" aria-labelledby="table-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Accessible data view</p>
+          <h2 id="table-heading">Average macros table</h2>
+        </div>
+        <p>Values are calculated from the filtered result.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Diet type</th><th scope="col">Protein (g)</th><th scope="col">Carbs (g)</th><th scope="col">Fat (g)</th></tr></thead>
+          <tbody id="macro-table-body"><tr><td colspan="4">Loading analysis...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div><strong>Diet Cloud Dashboard</strong><p>Phase 2 cloud dashboard development project</p></div>
+    <div class="team"><span>Project team</span><p>Asad Arif · Can Ozveren · Muhammad Talha Arif</p></div>
+    <p class="footer-tech">Azure Functions <span>+</span> Blob Storage <span>+</span> Static Web Apps</p>
+  </footer>
+
+  <div class="loading-overlay hidden" id="loading-overlay" aria-hidden="true">
+    <div class="loader"></div><span>Analyzing the Diets Dataset...</span>
+  </div>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

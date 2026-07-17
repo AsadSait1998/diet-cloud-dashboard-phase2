@@ -1,0 +1,36 @@
+name: Deploy Azure Function
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['backend/**', '.github/workflows/deploy-function.yml']
+
+permissions:
+  contents: read
+
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: backend
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Run backend tests
+        working-directory: backend
+        run: python -m unittest discover -s tests -v
+      - name: Deploy to Flex Consumption
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          sku: flexconsumption
+          remote-build: true
+          respect-funcignore: true
+

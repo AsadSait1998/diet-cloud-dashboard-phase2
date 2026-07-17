@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+backend/local.settings.json
+*.publishsettings
+*.PublishSettings
+.env
+work/
+outputs/
+.DS_Store
+Thumbs.db
