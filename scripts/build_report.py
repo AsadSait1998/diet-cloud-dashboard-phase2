@@ -164,7 +164,7 @@ def build() -> None:
         p("Asad Arif<br/>Can Ozveren<br/>Muhammad Talha Arif", styles["cover_team"]),
         Spacer(1, 1.2 * inch),
         p("Technical implementation report  |  July 17, 2026", styles["cover_meta"]),
-        p("Verified locally against the complete 7,806-row Phase 1 dataset. Azure account deployment evidence is identified explicitly in the final handoff section.", styles["cover_meta"]),
+        p("Verified locally and in Azure against the complete 7,806-row Phase 1 dataset. Live deployment evidence and public links are included in the final section.", styles["cover_meta"]),
         PageBreak(),
     ])
 
@@ -178,8 +178,8 @@ def build() -> None:
         [p("Backend API", styles["table_body_bold"]), p("Complete", styles["table_body"]), p("Filterable Azure Functions v2 endpoint with validation, caching, metadata, CORS, and errors", styles["table_body"])],
         [p("Dashboard", styles["table_body_bold"]), p("Complete", styles["table_body"]), p("Four charts, five KPIs, dynamic filters, loading/error states, accessible table, responsive layout", styles["table_body"])],
         [p("Cloud assets", styles["table_body_bold"]), p("Complete", styles["table_body"]), p("Flex Consumption Bicep, private storage containers, monitoring, CORS, TLS, deployment scripts", styles["table_body"])],
-        [p("Verification", styles["table_body_bold"]), p("Complete locally", styles["table_body"]), p("4 unit tests; 7,806-row API check; filter/reset checks; mobile overflow and console checks", styles["table_body"])],
-        [p("Azure links", styles["table_body_bold"]), p("Team action", styles["table_body"]), p("Requires an Azure subscription, GitHub repository, publish profile, and deployment token", styles["table_body"])],
+        [p("Verification", styles["table_body_bold"]), p("Complete", styles["table_body"]), p("4 unit tests; live 7,806-record API; filter/reset and responsive-browser checks; successful CI/CD", styles["table_body"])],
+        [p("Azure links", styles["table_body_bold"]), p("Complete", styles["table_body"]), p("Function, Static Web App, and GitHub URLs verified; deployment evidence included", styles["table_body"])],
     ]
     status_table = Table(status_rows, colWidths=[1.18 * inch, 1.05 * inch, 4.35 * inch], repeatRows=1)
     status_table.setStyle(TableStyle([
@@ -195,7 +195,7 @@ def build() -> None:
     story.append(status_table)
     story.extend([
         Spacer(1, 12),
-        Table([[p("KEY HANDOFF", styles["table_header"]), p("All locally authorable work is complete. The remaining steps create resources in the team's accounts, supply three public URLs, and replace local screenshots with Azure evidence if the instructor requires portal proof.", styles["callout"]) ]], colWidths=[1.15 * inch, 5.43 * inch], style=TableStyle([
+        Table([[p("DEPLOYED", styles["table_header"]), p("Azure resources, the private dataset, live Function, public dashboard, and GitHub CI/CD are complete. The final section records the required URLs and deployment evidence.", styles["callout"]) ]], colWidths=[1.15 * inch, 5.43 * inch], style=TableStyle([
             ("BACKGROUND", (0, 0), (0, 0), FOREST_DARK),
             ("BACKGROUND", (1, 0), (1, 0), MINT),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
@@ -441,16 +441,16 @@ def build() -> None:
     ]))
     story.extend([
         team_table,
-        p("Limitations", styles["h2"]),
-        p("Cloud URLs, Azure Portal resource screenshots, and successful deployment-run screenshots cannot be produced without access to the team's Azure and GitHub accounts. The repository includes exact steps and a checklist for adding that evidence. Local screenshots in this report are deliberately labeled and must not be presented as Azure Portal proof.", styles["body"]),
+        p("Deployment scope and limitations", styles["h2"]),
+        p("Evidence reflects the live course deployment completed on July 17, 2026. Secrets, connection strings, deployment tokens, and publish profiles are intentionally excluded. Local screenshots earlier in the report document development testing; Figures 5-8 show the final Azure and GitHub deployment.", styles["body"]),
         p("Conclusion", styles["h2"]),
-        p("The Phase 2 implementation is complete at the code, infrastructure, testing, and documentation layers. It satisfies the dashboard, visualization, integration, cloud-practice, and presentation requirements. After the team performs the account-bound deployment steps, the project will provide the three final submission links: Function endpoint, Static Web App, and GitHub repository.", styles["body"]),
+        p("The Phase 2 implementation is complete at the code, infrastructure, deployment, testing, and documentation layers. The Azure Function reads the private cloud dataset, the public Static Web App consumes its live API, and GitHub Actions validates and deploys both application layers. The project satisfies the dashboard, visualization, integration, cloud-practice, and presentation requirements.", styles["body"]),
         PageBreak(),
     ])
 
     story.extend([
         p("Final deployment evidence and submission", styles["h1"]),
-        p("Complete these account-bound fields after running <b>scripts/deploy_azure.ps1</b> and both GitHub deployment workflows.", styles["body"]),
+        p("The account-bound deployment is complete. These public values and screenshots document the final Azure and GitHub implementation.", styles["body"]),
     ])
     evidence_rows = [
         [p("Required deliverable", styles["table_header"]), p("Final value", styles["table_header"])],
@@ -471,19 +471,18 @@ def build() -> None:
     ]))
     story.extend([
         evidence_table,
-        p("Evidence screenshots to add", styles["h2"]),
+        p("Evidence screenshots included", styles["h2"]),
         p("1. Resource group Overview listing Function App, Storage, Static Web App, and Application Insights.", styles["bullet"]),
         p("2. Storage browser showing <b>datasets/All_Diets.csv</b> without keys or connection strings.", styles["bullet"]),
         p("3. Public dashboard showing all chart cards and <b>Live Azure API connected</b>.", styles["bullet"]),
-        p("4. Filtered public dashboard view demonstrating a changed result count.", styles["bullet"]),
-        p("5. GitHub Actions page showing successful CI, Function, and frontend workflows.", styles["bullet"]),
-        p("Submission order", styles["h2"]),
-        p("- Confirm the Function endpoint returns HTTP 200 and four chart datasets.", styles["bullet"]),
-        p("- Confirm the public dashboard has no browser console or network errors.", styles["bullet"]),
-        p("- Confirm the GitHub repository contains no secrets and is accessible to the instructor.", styles["bullet"]),
-        p("- Add the three URLs and any required portal screenshots to the final PDF.", styles["bullet"]),
+        p("4. GitHub Actions page showing successful CI, Function, and frontend workflows.", styles["bullet"]),
+        p("Final verification", styles["h2"]),
+        p("- Function endpoint returned HTTP 200 with summary, filters, four chart datasets, and execution metadata.", styles["bullet"]),
+        p("- Public dashboard connected to the live Azure API and rendered all interactive controls and charts.", styles["bullet"]),
+        p("- Public GitHub repository contains the frontend, backend, infrastructure, workflows, documentation, and no committed secrets.", styles["bullet"]),
+        p("- Final PDF contains all three public URLs and the required Azure/GitHub evidence.", styles["bullet"]),
         p("- Submit the PDF, links, and repository before the course deadline.", styles["bullet"]),
-        Table([[p("SUBMISSION NOTE", styles["table_header"]), p("The project ZIP includes DEPLOYMENT_GUIDE.md and SUBMISSION_CHECKLIST.md with the exact team actions, secret names, verification steps, and troubleshooting guidance.", styles["callout"]) ]], colWidths=[1.25 * inch, 5.33 * inch], style=TableStyle([
+        Table([[p("SUBMISSION NOTE", styles["table_header"]), p("The repository includes DEPLOYMENT_GUIDE.md and SUBMISSION_CHECKLIST.md with reproducible deployment, verification, and troubleshooting guidance.", styles["callout"]) ]], colWidths=[1.25 * inch, 5.33 * inch], style=TableStyle([
             ("BACKGROUND", (0, 0), (0, 0), FOREST_DARK),
             ("BACKGROUND", (1, 0), (1, 0), MINT),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
